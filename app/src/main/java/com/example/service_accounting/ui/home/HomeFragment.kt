@@ -4,6 +4,8 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.text.format.DateFormat
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +16,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.service_accounting.databinding.FragmentHomeBinding
 import com.example.service_accounting.db.*
-import java.util.Calendar
+import java.util.*
 
+@Suppress("DEPRECATION", "UNREACHABLE_CODE")
 class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private lateinit var myDbManager: MyDbManager
     private lateinit var users: MutableList<User>
@@ -41,13 +44,15 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
         binding.dropDown.adapter = SpinnerAdapterUser(requireContext(), users)
         binding.dropDown.onItemSelectedListener = this@HomeFragment
         binding.editTimeStart.setOnClickListener {
-            this.view?.let { popUpDate(binding.editTimeStart,requireContext()) }
+            this.view?.let { popUpDate(binding.editTimeStart, requireContext()) }
         }
         binding.editTimeEnd.setOnClickListener {
             this.view?.let { popUpDate(binding.editTimeEnd, requireContext()) }
         }
         binding.addRecord.setOnClickListener {
-            this.view?.let { addRecord() }
+            this.view?.let {
+                addRecord()
+            }
         }
         return root
     }
@@ -114,14 +119,56 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
 
     fun addRecord() {
-        val record = Record(
-            0,
-            position,
-            binding.editTimeStart.text.toString(),
-            binding.editTimeEnd.text.toString(),
-            binding.thickNum.text.toString().toInt(),
-            binding.productText.text.toString()
+        try {
+            val recordStart = binding.editTimeStart.text.toString()
+            val recordEnd = binding.editTimeEnd.text.toString()
+            val recordProduct = binding.productText.text.toString()
+            if (recordProduct.isNotEmpty() && recordEnd.isNotEmpty() && recordStart.isNotEmpty()) {
+                val record = Record(
+                    0,
+                    position,
+                    binding.editTimeStart.text.toString(),
+                    binding.editTimeEnd.text.toString(),
+                    binding.thickNum.text.toString().toInt(),
+                    binding.productText.text.toString()
+                )
+                val start = converTime(binding.editTimeStart.text.toString())
+                val end = converTime(binding.editTimeEnd.text.toString())
+                if (start.time < end.time)
+                    myDbManager.insertToDb(record)
+                else
+                    Toast.makeText(
+                        this.context,
+                        "Дата начала больше даты конца!", Toast.LENGTH_SHORT
+                    ).show()
+            }
+            else{
+                println("AAAA")
+                Toast.makeText(
+                    this.context,
+                    "Заполните все поля!", Toast.LENGTH_SHORT
+                ).show()
+            }
+        } catch (e: java.lang.Exception) {
+            Toast.makeText(
+                this.context,
+                "Заполните все поля", Toast.LENGTH_SHORT
+            ).show()
+        }
+
+    }
+
+    fun converTime(time: String): Date {
+        val dateWithTime = time.split(" ")
+        val date = dateWithTime[0].split("-")
+        val time = dateWithTime[1].split(":")
+        var a = Date(
+            date[2].toInt(),
+            date[1].toInt(),
+            date[0].toInt(),
+            time[0].toInt(),
+            time[1].toInt()
         )
-        myDbManager.insertToDb(record)
+        return a
     }
 }
