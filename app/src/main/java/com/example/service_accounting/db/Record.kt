@@ -7,8 +7,4 @@ class Record(recordId:Int,id:Int,start:String,end:String,thick:Int,product:Strin
     val END: String = end
     val THICK: Int = thick
     val PRODUCT: String = product
-
-    fun printInfo(){
-        println("$ID\n$FIO_ID\n$START\n$END\n$THICK\n$PRODUCT")
-    }
 }

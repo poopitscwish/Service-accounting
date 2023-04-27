@@ -9,7 +9,7 @@
 
     <string name="menu_home">Заявка</string>
     <string name="menu_gallery">Добавить пользователя</string>
-    <string name="menu_slideshow">Статистика</string>
+    <string name="menu_slideshow">История</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

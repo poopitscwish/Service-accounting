@@ -67,7 +67,7 @@ class CustomAdapterRecord(
         viewHolder.recordEnd.text = dataSet[position].END
         viewHolder.listRecord.setOnClickListener {
             val builder = AlertDialog.Builder(context)
-            builder.setTitle("Редактировать запись под номером $position")
+            builder.setTitle("Редактировать запись под номером ${dataSet[position].ID}")
             val dialogLayout = inflate(context, R.layout.edit_record_dialog, null)
             builder.setView(dialogLayout)
 
@@ -91,12 +91,22 @@ class CustomAdapterRecord(
                 HomeFragment().popUpDate(dialogLayout.findViewById(R.id.end), context)
             }
 
-
             builder.setNegativeButton("cancel") { _, i ->
                 Toast.makeText(
                     this.context,
                     "Отмена!", Toast.LENGTH_SHORT
                 ).show()
+            }
+            builder.setNeutralButton("удалить"){_,i->
+                val myDbManager = MyDbManager(context)
+                myDbManager.openDb()
+                myDbManager.deleteRecord(dataSet[position].ID-1)
+                refresh(myDbManager.readRecords())
+                Toast.makeText(
+                    this.context,
+                    "Изменено!", Toast.LENGTH_SHORT
+                ).show()
+
             }
             builder.setPositiveButton("OK") { _, i ->
                 try {

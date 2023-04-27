@@ -22,6 +22,7 @@ class MyDbManager(context: Context) {
             put(SQL.COLUMN_NAME_PRODUCT, record.PRODUCT)
         }
         db?.insert(SQL.RECORDS, null, values)
+
     }
 
     fun insertToDb(user: User) {
@@ -38,8 +39,12 @@ class MyDbManager(context: Context) {
         values.put(SQL.COLUMN_NAME_END, record.END)
         values.put(SQL.COLUMN_NAME_THICK, record.THICK)
         values.put(SQL.COLUMN_NAME_PRODUCT, record.PRODUCT)
-        record.printInfo()
         val result = db?.update(SQL.RECORDS, values, "${SQL.COLUMN_NAME_RECORD_ID}=?", arrayOf((record.ID + 1).toString()))
+        println("result=$result")
+    }
+    fun deleteRecord(id:Int){
+        val values = ContentValues()
+        val result = db?.delete(SQL.RECORDS, "${SQL.COLUMN_NAME_RECORD_ID}=?", arrayOf((id + 1).toString()))
         println("result=$result")
     }
 
@@ -91,4 +96,5 @@ class MyDbManager(context: Context) {
     fun closeDb() {
         myDbHelper.close()
     }
+
 }
