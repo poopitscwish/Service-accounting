@@ -106,7 +106,6 @@ class CustomAdapterRecord(
                     this.context,
                     "Изменено!", Toast.LENGTH_SHORT
                 ).show()
-
             }
             builder.setPositiveButton("OK") { _, i ->
                 try {
